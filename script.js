@@ -66,7 +66,7 @@ document.querySelectorAll('a[href^="#"]').forEach(link => {
 function updateActiveNav() {
   const scrollY = window.scrollY;
   document.querySelectorAll('section[id]').forEach(sec => {
-    const top    = sec.offsetTop - 160;
+    const top = sec.offsetTop - 160;
     const bottom = top + sec.offsetHeight;
     if (scrollY >= top && scrollY < bottom) {
       document.querySelectorAll('.nav-links a').forEach(a => {
@@ -96,17 +96,17 @@ const staggerObserver = new IntersectionObserver(entries => {
     if (!entry.isIntersecting) return;
 
     const cards = entry.target.querySelectorAll(
-      '.proj-card, .skill-card, .hl-card, .edu-card'
+      '.proj-card, .skill-card, .hl-card, .edu-card, .hire-card'
     );
 
     cards.forEach((card, i) => {
-      card.style.opacity   = '0';
+      card.style.opacity = '0';
       card.style.transform = 'translateY(20px)';
 
       setTimeout(() => {
         card.style.transition = 'opacity 0.45s ease, transform 0.45s ease, border-color 0.25s, box-shadow 0.25s';
-        card.style.opacity    = '1';
-        card.style.transform  = 'translateY(0)';
+        card.style.opacity = '1';
+        card.style.transform = 'translateY(0)';
       }, i * 75 + 30);
     });
 
@@ -114,7 +114,7 @@ const staggerObserver = new IntersectionObserver(entries => {
   });
 }, { threshold: 0.08 });
 
-document.querySelectorAll('.proj-group, .skills-layout, .highlights, .about-grid')
+document.querySelectorAll('.proj-group, .skills-layout, .highlights, .about-grid, .hire-container')
   .forEach(el => staggerObserver.observe(el));
 
 
@@ -126,7 +126,7 @@ async function fetchStarCount(el) {
   const repo = el.dataset.repo;
   if (!repo) return;
   try {
-    const res  = await fetch(`https://api.github.com/repos/${repo}`);
+    const res = await fetch(`https://api.github.com/repos/${repo}`);
     if (!res.ok) { el.textContent = '0'; return; }
     const data = await res.json();
     el.textContent = (data.stargazers_count ?? 0).toLocaleString();

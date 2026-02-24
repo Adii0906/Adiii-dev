@@ -242,10 +242,11 @@ body::before {
   animation: riseUp 0.8s var(--ease) 0.05s both;
 }
 
-.name-hi {
-  font-style: italic;
+.name-bold {
   font-weight: 800;
   color: var(--green);
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 .hero-role {
@@ -906,6 +907,104 @@ body::before {
   border-color: var(--green);
   color: var(--green);
   transform: translateY(-1px);
+}
+
+
+/* ── HIRE ME ──────────────────────────────── */
+.hire-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.hire-card {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+  padding: 60px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  max-width: 900px;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.05);
+}
+
+.hire-card::after {
+  content: '';
+  position: absolute;
+  top: -50px;
+  right: -50px;
+  width: 150px;
+  height: 150px;
+  background: var(--green-glow);
+  border-radius: 50%;
+  z-index: 0;
+}
+
+.hire-icon {
+  width: 100px;
+  height: 100px;
+  min-width: 100px;
+  background: var(--green-lt);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  color: var(--green);
+  z-index: 1;
+}
+
+.hire-content {
+  flex: 1;
+  z-index: 1;
+}
+
+.hire-h3 {
+  font-family: 'Syne', sans-serif;
+  font-size: 24px;
+  font-weight: 800;
+  margin-bottom: 12px;
+  color: var(--text);
+}
+
+.hire-p {
+  font-size: 15px;
+  color: var(--text2);
+  line-height: 1.8;
+  margin-bottom: 24px;
+  max-width: 500px;
+}
+
+.hire-actions {
+  display: flex;
+  gap: 16px;
+}
+
+.hire-action-btn {
+  padding: 14px 28px !important;
+  font-size: 13px !important;
+}
+
+@media (max-width: 768px) {
+  .hire-card {
+    flex-direction: column;
+    text-align: center;
+    padding: 40px 30px;
+    gap: 24px;
+  }
+
+  .hire-p {
+    margin: 0 auto 24px;
+  }
+
+  .hire-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
 }
 
 
