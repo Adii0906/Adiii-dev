@@ -47,6 +47,10 @@
         <a href="#skills">~/skills</a>
         <a href="#hire-me">~/hire</a>
         <a href="#contact">~/contact</a>
+        <div class="visit-pill" title="Portfolio visits">
+          <i class="fas fa-eye"></i>
+          <span id="visit-count">—</span>
+        </div>
         <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
           <i class="fas fa-moon"></i>
         </button>
@@ -142,6 +146,10 @@
           <p class="about-intro">
             I'm an <strong>AI-focused developer</strong> i love building
             intelligent systems that solve real-world problems.
+          </p>
+          <p class="about-p">
+            Right now I'm <strong>building in the AI space</strong> — shipping LLM-powered products,
+            autonomous agents, and tools that push what's possible with modern AI.
           </p>
           <p class="about-p">
             My expertise spans <strong>LLM-powered apps</strong>, <strong>RAG pipelines</strong>,
@@ -284,28 +292,28 @@
             </div>
           </article>
 
-          <!-- PROJECT: ContextGen AI -->
+          <!-- PROJECT: ML Agent -->
           <article class="proj-card">
             <div class="proj-top">
-              <div class="proj-icon"><i class="fas fa-database"></i></div>
+              <div class="proj-icon"><i class="fas fa-robot"></i></div>
               <div class="proj-tags">
-                <span class="ptag">RAG</span>
-                <span class="ptag">LangChain</span>
-                <span class="ptag">LLM</span>
+                <span class="ptag">Python</span>
+                <span class="ptag">Agents</span>
+                <span class="ptag">ML</span>
               </div>
             </div>
-            <h3 class="proj-title">ContextGen AI</h3>
+            <h3 class="proj-title">ML Agent</h3>
             <p class="proj-desc">
-              AI-powered context generation engine using RAG pipelines.
-              Synthesizes information from multiple sources and provides
-              grounded, citation-backed responses.
+              An autonomous machine learning agent that automates the ML workflow —
+              from data prep and model selection to training and evaluation —
+              using agentic reasoning to make smart decisions end to end.
             </p>
             <div class="proj-footer">
               <div class="stars-badge">
                 <i class="fas fa-star"></i>
-                <span class="star-count" data-repo="Adii0906/ContextGen-AI">—</span>
+                <span class="star-count" data-repo="Adii0906/ml-agent">—</span>
               </div>
-              <a href="https://github.com/Adii0906/ContextGen-AI" target="_blank" class="proj-link">
+              <a href="https://github.com/Adii0906/ml-agent" target="_blank" class="proj-link">
                 GitHub <i class="fab fa-github"></i>
               </a>
             </div>
@@ -535,28 +543,28 @@
             </div>
           </article>
 
-          <!-- PROJECT: Research Buddy -->
+          <!-- PROJECT: Collapse AI -->
           <article class="proj-card">
             <div class="proj-top">
-              <div class="proj-icon"><i class="fas fa-search"></i></div>
+              <div class="proj-icon"><i class="fas fa-compress-arrows-alt"></i></div>
               <div class="proj-tags">
                 <span class="ptag">AI</span>
-                <span class="ptag">Research</span>
                 <span class="ptag">LLM</span>
+                <span class="ptag">Experimental</span>
               </div>
             </div>
-            <h3 class="proj-title">Research Buddy</h3>
+            <h3 class="proj-title">Collapse AI</h3>
             <p class="proj-desc">
-              AI-powered research assistant that automates literature reviews
-              and data synthesis. Helps researchers extract key insights
-              from diverse academic sources.
+              An experimental AI project exploring intelligent collapsing and
+              compression of information into concise, high-signal output —
+              a weekend hack pushing new ideas in LLM-driven workflows.
             </p>
             <div class="proj-footer">
               <div class="stars-badge">
                 <i class="fas fa-star"></i>
-                <span class="star-count" data-repo="Adii0906/research-buddy">—</span>
+                <span class="star-count" data-repo="Adii0906/Collapse-AI">—</span>
               </div>
-              <a href="https://github.com/Adii0906/research-buddy" target="_blank" class="proj-link">
+              <a href="https://github.com/Adii0906/Collapse-AI" target="_blank" class="proj-link">
                 GitHub <i class="fab fa-github"></i>
               </a>
             </div>
@@ -759,6 +767,14 @@
       <p class="footer-note">// made with caffeine & curiosity</p>
     </div>
   </footer>
+
+  <!-- ═══════════════════════════════════════
+       CLAP BUTTON (floating)
+  ═══════════════════════════════════════ -->
+  <button id="clap-btn" class="clap-btn" aria-label="Clap for this portfolio" title="Enjoyed it? Give a clap!">
+    <span class="clap-emoji"><i class="fas fa-hands-clapping"></i></span>
+    <span class="clap-count" id="clap-count">—</span>
+  </button>
 
   <script src="script.js"></script>
 </body>

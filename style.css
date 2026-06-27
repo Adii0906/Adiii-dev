@@ -1294,3 +1294,127 @@ footer {
     grid-template-columns: 1fr;
   }
 }
+
+/* ═══════════════════════════════════════════
+   VISIT COUNTER (navbar pill)
+═══════════════════════════════════════════ */
+.visit-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 12px;
+  background: var(--green-lt);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--green);
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.visit-pill i {
+  font-size: 12px;
+}
+
+.visit-pill #visit-count {
+  font-variant-numeric: tabular-nums;
+  min-width: 12px;
+}
+
+
+/* ═══════════════════════════════════════════
+   CLAP BUTTON (floating)
+═══════════════════════════════════════════ */
+.clap-btn {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 250;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 12px 18px;
+  background: var(--card);
+  color: var(--text);
+  border: 1px solid var(--border2);
+  border-radius: 40px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12);
+  transition: transform 0.2s var(--ease), box-shadow 0.25s var(--ease), border-color 0.25s;
+}
+
+.clap-btn:hover {
+  transform: translateY(-2px);
+  border-color: var(--green);
+  box-shadow: 0 12px 30px var(--green-glow);
+}
+
+.clap-btn .clap-emoji {
+  display: inline-flex;
+  font-size: 18px;
+  color: var(--green);
+  transition: transform 0.2s var(--ease);
+}
+
+.clap-btn:active .clap-emoji {
+  transform: scale(0.85);
+}
+
+.clap-btn .clap-count {
+  font-variant-numeric: tabular-nums;
+  min-width: 14px;
+  text-align: left;
+}
+
+/* clapped state */
+.clap-btn.clapped {
+  background: var(--green);
+  color: #fff;
+  border-color: var(--green);
+}
+
+.clap-btn.clapped .clap-emoji {
+  color: #fff;
+}
+
+/* pop animation on clap */
+@keyframes clapPop {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(1.35) rotate(-8deg); }
+  100% { transform: scale(1); }
+}
+
+.clap-btn.pop .clap-emoji {
+  animation: clapPop 0.45s var(--ease);
+}
+
+/* floating +1 burst */
+.clap-burst {
+  position: fixed;
+  z-index: 251;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--green);
+  pointer-events: none;
+  animation: clapBurst 0.8s ease-out forwards;
+}
+
+@keyframes clapBurst {
+  0%   { opacity: 1; transform: translateY(0) scale(1); }
+  100% { opacity: 0; transform: translateY(-40px) scale(1.4); }
+}
+
+@media (max-width: 768px) {
+  .visit-pill {
+    display: none;
+  }
+  .clap-btn {
+    right: 16px;
+    bottom: 16px;
+    padding: 10px 15px;
+  }
+}

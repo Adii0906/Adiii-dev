@@ -158,7 +158,123 @@ const themeToggle = document.getElementById('theme-toggle');
 themeToggle.addEventListener('click', () => {
   const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
   const newTheme = isDark ? 'light' : 'dark';
-  
+
   document.documentElement.setAttribute('data-theme', newTheme);
   localStorage.setItem('theme', newTheme);
 });
+
+
+// ── VISIT COUNTER & CLAP COUNTER ───────────
+// Uses CounterAPI (free, no signup) for a shared, global count.
+// Falls back to localStorage if the network call fails, so the UI
+// always shows a number.
+const COUNTER_NS = 'adii0906-portfolio';
+const COUNTER_BASE = 'https://api.counterapi.dev/v1';
+
+// Pull a numeric count out of whatever shape the API returns.
+function readCount(data) {
+  if (data == null) return null;
+  if (typeof data === 'number') return data;
+  return data.count ?? data.value ?? data.Count ?? null;
+}
+
+async function counter(key, action /* 'up' | '' */) {
+  const url = `${COUNTER_BASE}/${COUNTER_NS}/${key}${action ? '/' + action : ''}`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error('counter request failed');
+  return readCount(await res.json());
+}
+
+function fmt(n) {
+  return Number(n).toLocaleString();
+}
+
+// ── Visits: count once per browser session ──
+(async function initVisits() {
+  const el = document.getElementById('visit-count');
+  if (!el) return;
+
+  const alreadyCounted = sessionStorage.getItem('visit-counted') === '1';
+  try {
+    const count = await counter('visits', alreadyCounted ? '' : 'up');
+    if (count != null) {
+      el.textContent = fmt(count);
+      sessionStorage.setItem('visit-counted', '1');
+      localStorage.setItem('visit-count-cache', count);
+      return;
+    }
+    throw new Error('no count');
+  } catch {
+    // Offline / blocked fallback — show last known or a local tally.
+    const cached = Number(localStorage.getItem('visit-count-cache') || 0) + 1;
+    localStorage.setItem('visit-count-cache', cached);
+    el.textContent = fmt(cached);
+  }
+})();
+
+// ── Claps: one clap per visitor ─────────────
+(function initClaps() {
+  const btn = document.getElementById('clap-btn');
+  const countEl = document.getElementById('clap-count');
+  if (!btn || !countEl) return;
+
+  const hasClapped = () => localStorage.getItem('has-clapped') === '1';
+
+  if (hasClapped()) btn.classList.add('clapped');
+
+  // Show current total without incrementing.
+  (async () => {
+    try {
+      const count = await counter('claps', '');
+      if (count != null) {
+        countEl.textContent = fmt(count);
+        localStorage.setItem('clap-count-cache', count);
+        return;
+      }
+      throw new Error('no count');
+    } catch {
+      countEl.textContent = fmt(localStorage.getItem('clap-count-cache') || 0);
+    }
+  })();
+
+  function burst() {
+    const rect = btn.getBoundingClientRect();
+    const span = document.createElement('span');
+    span.className = 'clap-burst';
+    span.textContent = '+1';
+    span.style.left = (rect.left + rect.width / 2 - 8) + 'px';
+    span.style.top = (rect.top - 6) + 'px';
+    document.body.appendChild(span);
+    setTimeout(() => span.remove(), 800);
+  }
+
+  btn.addEventListener('click', async () => {
+    if (hasClapped()) {
+      // Already clapped — give a little nudge animation but don't count.
+      btn.classList.remove('pop');
+      void btn.offsetWidth;
+      btn.classList.add('pop');
+      return;
+    }
+
+    // Optimistic UI
+    localStorage.setItem('has-clapped', '1');
+    btn.classList.add('clapped', 'pop');
+    burst();
+    const optimistic = Number(String(countEl.textContent).replace(/,/g, '')) + 1;
+    countEl.textContent = fmt(optimistic);
+
+    try {
+      const count = await counter('claps', 'up');
+      if (count != null) {
+        countEl.textContent = fmt(count);
+        localStorage.setItem('clap-count-cache', count);
+      }
+    } catch {
+      // Keep optimistic value; nothing else to do.
+      localStorage.setItem('clap-count-cache', optimistic);
+    }
+  });
+
+  btn.addEventListener('animationend', () => btn.classList.remove('pop'));
+})();
