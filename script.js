@@ -24,7 +24,7 @@ function typeLoop() {
     ? phrase.slice(0, --cIdx)
     : phrase.slice(0, ++cIdx);
 
-  let delay = deleting ? 40 : 90;
+  let delay = deleting ? 55 : 110;
 
   if (!deleting && cIdx === phrase.length) {
     delay = 2000; // pause at end
@@ -50,10 +50,47 @@ window.addEventListener('scroll', () => {
 }, { passive: true });
 
 
+// ── MOBILE NAV (hamburger) ─────────────────
+const navToggle = document.getElementById('nav-toggle');
+const navLinks = document.getElementById('nav-links');
+
+// Backdrop that dims the page while the menu is open
+const navBackdrop = document.createElement('div');
+navBackdrop.className = 'nav-backdrop';
+document.body.appendChild(navBackdrop);
+
+function openMenu() {
+  navLinks.classList.add('open');
+  navToggle.classList.add('open');
+  navBackdrop.classList.add('show');
+  navToggle.setAttribute('aria-expanded', 'true');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeMenu() {
+  navLinks.classList.remove('open');
+  navToggle.classList.remove('open');
+  navBackdrop.classList.remove('show');
+  navToggle.setAttribute('aria-expanded', 'false');
+  document.body.style.overflow = '';
+}
+
+if (navToggle) {
+  navToggle.addEventListener('click', () => {
+    navLinks.classList.contains('open') ? closeMenu() : openMenu();
+  });
+  navBackdrop.addEventListener('click', closeMenu);
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeMenu();
+  });
+}
+
+
 // ── SMOOTH SCROLL ─────────────────────────
 document.querySelectorAll('a[href^="#"]').forEach(link => {
   link.addEventListener('click', e => {
     e.preventDefault();
+    closeMenu(); // close the mobile menu if a nav link was tapped
     const target = document.querySelector(link.getAttribute('href'));
     if (target) {
       window.scrollTo({ top: target.offsetTop - 76, behavior: 'smooth' });
