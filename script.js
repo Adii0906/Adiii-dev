@@ -111,7 +111,25 @@ function updateActiveNav() {
       });
     }
   });
+  moveNavIndicator();
 }
+
+// ── NAV ACTIVE-LINK INDICATOR (sliding pill) ─
+const navIndicator = document.getElementById('nav-indicator');
+
+function moveNavIndicator() {
+  if (!navIndicator) return;
+  const active = document.querySelector('.nav-links a.active');
+  if (!active) return;
+  const parentRect = navIndicator.parentElement.getBoundingClientRect();
+  const rect = active.getBoundingClientRect();
+  navIndicator.style.width = `${rect.width}px`;
+  navIndicator.style.transform = `translate(${rect.left - parentRect.left}px, -50%)`;
+  navIndicator.classList.add('ready');
+}
+
+window.addEventListener('resize', () => moveNavIndicator(), { passive: true });
+window.addEventListener('load', () => setTimeout(moveNavIndicator, 60));
 
 
 // ── SCROLL REVEAL ──────────────────────────
@@ -133,7 +151,7 @@ const staggerObserver = new IntersectionObserver(entries => {
     if (!entry.isIntersecting) return;
 
     const cards = entry.target.querySelectorAll(
-      '.proj-card, .skill-card, .hl-card, .edu-card, .hire-card'
+      '.proj-card, .proj-spotlight, .skill-card, .hl-card, .edu-card, .hire-card'
     );
 
     cards.forEach((card, i) => {
@@ -182,6 +200,216 @@ document.querySelectorAll('.star-count[data-repo]').forEach((el, i) => {
 window.addEventListener('load', () => {
   document.body.style.opacity = '1';
 });
+
+
+// ═══════════════════════════════════════════
+// MOTION SYSTEM — hero headline stagger,
+// flickering-grid background, hero image tilt,
+// magnetic buttons. All perf-guarded and
+// disabled under prefers-reduced-motion.
+// ═══════════════════════════════════════════
+const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const FINE_POINTER = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+// ── Word-by-word headline entrance ─────────
+function splitWords(el) {
+  const frag = document.createDocumentFragment();
+
+  el.childNodes.forEach(child => {
+    if (child.nodeType === Node.TEXT_NODE) {
+      child.textContent.split(/(\s+)/).forEach(part => {
+        if (part.trim() === '') {
+          if (part) frag.appendChild(document.createTextNode(part));
+          return;
+        }
+        const wrap = document.createElement('span');
+        wrap.className = 'split-word';
+        const inner = document.createElement('span');
+        inner.textContent = part;
+        wrap.appendChild(inner);
+        frag.appendChild(wrap);
+      });
+    } else if (child.nodeType === Node.ELEMENT_NODE) {
+      const wrap = document.createElement('span');
+      wrap.className = 'split-word';
+      const inner = document.createElement('span');
+      inner.appendChild(child.cloneNode(true));
+      wrap.appendChild(inner);
+      frag.appendChild(wrap);
+    }
+  });
+
+  el.innerHTML = '';
+  el.appendChild(frag);
+
+  const words = el.querySelectorAll('.split-word');
+  words.forEach((w, i) => w.style.setProperty('--i', i));
+
+  // double rAF so the initial (offscreen) state paints before we animate in
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      words.forEach(w => w.classList.add('in'));
+    });
+  });
+}
+
+if (!REDUCED_MOTION) {
+  const splitTarget = document.querySelector('.split-text');
+  if (splitTarget) splitWords(splitTarget);
+}
+
+
+// ── Flickering grid canvas (hero / contact bg) ─
+class FlickerGrid {
+  constructor(canvas, opts = {}) {
+    this.canvas = canvas;
+    this.ctx = canvas.getContext('2d');
+    this.cell = opts.cell || 28;
+    this.gap = opts.gap || 7;
+    this.maxOpacity = opts.maxOpacity ?? 0.16;
+    this.fps = opts.fps || 12;
+    this.running = false;
+    this.visible = true;
+    this.tabVisible = !document.hidden;
+    this.small = window.matchMedia('(max-width: 640px)').matches;
+    this._lastFrame = 0;
+
+    this._resize();
+    window.addEventListener('resize', this._debounce(() => this._resize(), 200), { passive: true });
+
+    this._io = new IntersectionObserver(entries => {
+      this.visible = entries[0].isIntersecting;
+    }, { threshold: 0 });
+    this._io.observe(canvas);
+
+    document.addEventListener('visibilitychange', () => {
+      this.tabVisible = !document.hidden;
+    });
+
+    this._t0 = performance.now();
+    this.start();
+  }
+
+  _debounce(fn, ms) {
+    let t;
+    return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); };
+  }
+
+  _resize() {
+    const rect = this.canvas.getBoundingClientRect();
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    this.w = Math.max(rect.width, 1);
+    this.h = Math.max(rect.height, 1);
+    this.canvas.width = this.w * dpr;
+    this.canvas.height = this.h * dpr;
+    this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    const cell = this.small ? this.cell * 1.5 : this.cell;
+    this.cols = Math.max(Math.ceil(this.w / cell), 1);
+    this.rows = Math.max(Math.ceil(this.h / cell), 1);
+    this.cellSize = cell;
+    this.cells = Array.from({ length: this.cols * this.rows }, () => ({
+      phase: Math.random() * Math.PI * 2,
+      speed: 0.3 + Math.random() * 0.6
+    }));
+  }
+
+  start() {
+    if (this.running) return;
+    this.running = true;
+    requestAnimationFrame(t => this._tick(t));
+  }
+
+  stop() {
+    this.running = false;
+  }
+
+  _tick(now) {
+    if (!this.running) return;
+    requestAnimationFrame(t => this._tick(t));
+
+    if (!this.visible || !this.tabVisible) return;
+
+    const interval = 1000 / this.fps;
+    if (now - this._lastFrame < interval) return;
+    this._lastFrame = now;
+
+    const t = (now - this._t0) / 1000;
+    const ctx = this.ctx;
+    ctx.clearRect(0, 0, this.w, this.h);
+
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    const rgb = isDark ? '245,245,245' : '17,17,17';
+
+    for (let i = 0; i < this.cells.length; i++) {
+      const col = i % this.cols;
+      const row = Math.floor(i / this.cols);
+      const c = this.cells[i];
+      const op = (Math.sin(t * c.speed + c.phase) * 0.5 + 0.5) * this.maxOpacity;
+      if (op < 0.025) continue;
+      ctx.fillStyle = `rgba(${rgb},${op.toFixed(3)})`;
+      ctx.fillRect(
+        col * this.cellSize + this.gap / 2,
+        row * this.cellSize + this.gap / 2,
+        this.cellSize - this.gap,
+        this.cellSize - this.gap
+      );
+    }
+  }
+}
+
+if (!REDUCED_MOTION) {
+  const lowPower = navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 2;
+  document.querySelectorAll('canvas[data-fx="grid"]').forEach(canvas => {
+    new FlickerGrid(canvas, {
+      fps: lowPower ? 6 : 12,
+      maxOpacity: 0.16
+    });
+  });
+}
+
+
+// ── Hero image tilt (pointer-fine only) ────
+(function heroTilt() {
+  if (REDUCED_MOTION || !FINE_POINTER) return;
+  const frame = document.querySelector('.img-frame[data-tilt]');
+  const section = document.getElementById('home');
+  if (!frame || !section) return;
+
+  const strength = 7; // deg
+  let raf = null;
+
+  section.addEventListener('mousemove', e => {
+    const rect = frame.getBoundingClientRect();
+    const px = (e.clientX - rect.left) / rect.width - 0.5;
+    const py = (e.clientY - rect.top) / rect.height - 0.5;
+    if (raf) cancelAnimationFrame(raf);
+    raf = requestAnimationFrame(() => {
+      frame.style.transform = `rotateY(${(px * strength).toFixed(2)}deg) rotateX(${(-py * strength).toFixed(2)}deg) translateY(-5px)`;
+    });
+  }, { passive: true });
+
+  section.addEventListener('mouseleave', () => {
+    if (raf) cancelAnimationFrame(raf);
+    frame.style.transform = '';
+  });
+})();
+
+
+// ── Magnetic hover for hero CTA buttons ────
+if (!REDUCED_MOTION && FINE_POINTER) {
+  document.querySelectorAll('.magnetic').forEach(btn => {
+    btn.addEventListener('mousemove', e => {
+      const r = btn.getBoundingClientRect();
+      const x = e.clientX - r.left - r.width / 2;
+      const y = e.clientY - r.top - r.height / 2;
+      btn.style.transform = `translate(${(x * 0.18).toFixed(1)}px, ${(y * 0.35).toFixed(1)}px)`;
+    });
+    btn.addEventListener('mouseleave', () => {
+      btn.style.transform = '';
+    });
+  });
+}
 
 console.log(
   '%c  < ADITYA />  ',
