@@ -66,6 +66,7 @@
       </button>
 
       <div class="nav-links" id="nav-links">
+        <div class="nav-indicator" id="nav-indicator" aria-hidden="true"></div>
         <a href="#home" class="active">~/home</a>
         <a href="#about">~/about</a>
         <a href="#work">~/work</a>
@@ -93,6 +94,18 @@
        HERO SECTION
   ═══════════════════════════════════════ -->
   <section id="home">
+    <!-- animated background: mesh gradient + light lines + flickering grid + grain -->
+    <div class="bg-fx" aria-hidden="true">
+      <div class="mesh-blob b1"></div>
+      <div class="mesh-blob b2"></div>
+      <div class="mesh-blob b3"></div>
+      <div class="light-lines">
+        <span></span><span></span><span></span><span></span>
+      </div>
+      <canvas class="grid-canvas" data-fx="grid"></canvas>
+      <div class="noise-layer"></div>
+    </div>
+
     <div class="hero-inner">
 
       <div class="hero-text">
@@ -104,7 +117,12 @@
           <span class="terminal-title">aditya@portfolio:~$</span>
         </div>
 
-        <h1 class="hero-name">Hi, I'm <span class="name-bold">ADITYA</span></h1>
+        <div class="hero-eyebrow">
+          <span class="eyebrow-dot"></span>
+          <span>AI Developer · Agentic Systems &amp; LLM Engineering</span>
+        </div>
+
+        <h1 class="hero-name split-text">I build AI that <span class="name-bold">acts</span> — not just answers.</h1>
 
         <div class="hero-role">
           <span class="prompt">❯</span>
@@ -121,16 +139,33 @@
         </button>
 
         <p class="hero-desc">
-          Building intelligent AI-powered apps with Python, LLMs & modern frameworks.
-          Turning ideas into production-grade solutions — one commit at a time.
+          I design and ship <strong>agentic AI systems</strong>, <strong>LLM-powered applications</strong>
+          and <strong>RAG pipelines</strong> — backed by production-grade backend engineering in
+          Python, FastAPI and modern infra. From autonomous agents to the APIs that serve them.
         </p>
 
         <div class="hero-btns">
-          <a href="#work" class="btn-primary">
+          <a href="#work" class="btn-primary magnetic">
             <i class="fas fa-folder-open"></i> View Work
           </a>
-          <a href="#contact" class="btn-outline">
+          <a href="#contact" class="btn-outline magnetic">
             <i class="fas fa-paper-plane"></i> Get In Touch
+          </a>
+        </div>
+
+        <!-- Social links -->
+        <div class="hero-socials">
+          <a href="https://github.com/Adii0906" target="_blank" rel="noopener" aria-label="GitHub">
+            <i class="fab fa-github"></i>
+          </a>
+          <a href="https://www.linkedin.com/in/aditya-j-458824313" target="_blank" rel="noopener" aria-label="LinkedIn">
+            <i class="fab fa-linkedin"></i>
+          </a>
+          <a href="https://x.com/Xnonymous_0?t=JnkfgfTWVLZ-fycIYQL89g&s=08" target="_blank" rel="noopener" aria-label="Twitter / X">
+            <i class="fab fa-twitter"></i>
+          </a>
+          <a href="https://mail.google.com/mail/?view=cm&fs=1&to=adityagond1035@gmail.com" target="_blank" rel="noopener" aria-label="Email">
+            <i class="fas fa-envelope"></i>
           </a>
         </div>
 
@@ -148,7 +183,7 @@
 
       <!-- Profile image -->
       <div class="hero-img-wrap">
-        <div class="img-frame">
+        <div class="img-frame" data-tilt>
           <img src="profile.png" alt="Aditya — AI Developer" />
         </div>
         <!-- floating status badge -->
@@ -156,9 +191,19 @@
           <span class="status-dot"></span>
           Available for work
         </div>
+        <!-- decorative floating technical card -->
+        <div class="hero-float-card">
+          <span class="fc-dot"></span>
+          <span><strong>agent.run()</strong> → building RAG pipeline</span>
+        </div>
       </div>
 
     </div>
+
+    <a href="#about" class="scroll-cue">
+      <span>Scroll</span>
+      <span class="scroll-track"></span>
+    </a>
   </section>
 
 
@@ -344,33 +389,63 @@
               </div>
             </div>
 
-            <ul class="pf-highlights">
-              <li><i class="fas fa-file-import"></i> Pamphlet OCR &amp; product extraction</li>
-              <li><i class="fas fa-pen-to-square"></i> Seller review &amp; editing</li>
-              <li><i class="fas fa-tags"></i> Product &amp; offer management</li>
-              <li><i class="fas fa-layer-group"></i> Reusable storefront templates</li>
-            </ul>
+            <div class="pf-side">
+              <div class="mock-browser" aria-hidden="true">
+                <div class="mock-bar">
+                  <span></span><span></span><span></span>
+                  <div class="mock-url">snap-shop-teal.vercel.app</div>
+                </div>
+                <div class="mock-body">
+                  <div class="mock-row mock-row--hero"></div>
+                  <div class="mock-grid">
+                    <div class="mock-card"></div>
+                    <div class="mock-card"></div>
+                    <div class="mock-card"></div>
+                  </div>
+                </div>
+              </div>
+              <ul class="pf-highlights">
+                <li><i class="fas fa-file-import"></i> Pamphlet OCR &amp; product extraction</li>
+                <li><i class="fas fa-pen-to-square"></i> Seller review &amp; editing</li>
+                <li><i class="fas fa-tags"></i> Product &amp; offer management</li>
+                <li><i class="fas fa-layer-group"></i> Reusable storefront templates</li>
+              </ul>
+            </div>
           </div>
         </article>
 
-        <div class="proj-grid">
 
-          <!-- PROJECT: ML Agent -->
-          <article class="proj-card">
-            <div class="proj-top">
-              <div class="proj-icon"><i class="fas fa-robot"></i></div>
-              <div class="proj-tags">
-                <span class="ptag">Python</span>
-                <span class="ptag">AI Agents</span>
-                <span class="ptag">ML</span>
+        <!-- ★★ SPOTLIGHT TIER: rank #2 & #3 ─────────── -->
+        <div class="proj-spotlight-grid">
+
+          <!-- SPOTLIGHT #2: ML Agent -->
+          <article class="proj-spotlight">
+            <span class="sp-rank">02</span>
+            <div class="sp-head">
+              <div class="sp-icon"><i class="fas fa-robot"></i></div>
+              <div>
+                <h3 class="sp-title">ML Agent</h3>
+                <div class="sp-sub">Autonomous end-to-end machine learning agent</div>
               </div>
             </div>
-            <h3 class="proj-title">ML Agent</h3>
-            <p class="proj-desc">
-              Autonomous end-to-end ML agent — inspects a dataset, picks a strategy,
-              trains and evaluates candidate models, and explains its decisions.
+            <p class="sp-desc">
+              Inspects a dataset, picks a modeling strategy, trains and evaluates
+              candidate models, then explains why it chose the winning one —
+              no manual pipeline wiring required.
             </p>
-            <div class="proj-footer">
+            <div class="proj-mini-term">
+              <span class="ln cmd">python ml_agent.py --dataset data.csv</span>
+              <span class="ln out">&gt; inspecting dataset... 12 features detected</span>
+              <span class="ln out">&gt; training 4 candidate models...</span>
+              <span class="ln out">&gt; best: RandomForest — F1 0.891 ✓</span>
+            </div>
+            <div class="sp-tags">
+              <span class="ptag">Python</span>
+              <span class="ptag">AI Agents</span>
+              <span class="ptag">ML</span>
+              <span class="ptag">Scikit-learn</span>
+            </div>
+            <div class="sp-footer">
               <div class="stars-badge">
                 <i class="fas fa-star"></i>
                 <span class="star-count" data-repo="Adii0906/ml-agent">—</span>
@@ -380,6 +455,47 @@
               </a>
             </div>
           </article>
+
+          <!-- SPOTLIGHT #3: errbase -->
+          <article class="proj-spotlight">
+            <span class="sp-rank">03</span>
+            <div class="sp-head">
+              <div class="sp-icon"><i class="fas fa-brain"></i></div>
+              <div>
+                <h3 class="sp-title">errbase</h3>
+                <div class="sp-sub">Your terminal remembers how you fixed it last time</div>
+              </div>
+            </div>
+            <p class="sp-desc">
+              A knowledge-graph memory layer for errors — <code>remember</code> a fix once,
+              <code>recall</code> it the moment the error reappears. Ships as a CLI and as an
+              MCP server so agents like Claude Code get persistent memory across sessions.
+            </p>
+            <div class="proj-mini-term">
+              <span class="ln cmd">errbase recall "ModuleNotFoundError: pandas"</span>
+              <span class="ln out">&gt; match found (last used 3 fixes ago)</span>
+              <span class="ln out">&gt; fix: pip install pandas</span>
+            </div>
+            <div class="sp-tags">
+              <span class="ptag">Python</span>
+              <span class="ptag">MCP</span>
+              <span class="ptag">Agentic AI</span>
+              <span class="ptag">Knowledge Graph</span>
+            </div>
+            <div class="sp-footer">
+              <div class="stars-badge">
+                <i class="fas fa-star"></i>
+                <span class="star-count" data-repo="Adii0906/errbase">—</span>
+              </div>
+              <a href="https://github.com/Adii0906/errbase" target="_blank" class="proj-link">
+                GitHub <i class="fab fa-github"></i>
+              </a>
+            </div>
+          </article>
+
+        </div>
+
+        <div class="proj-grid">
 
           <!-- PROJECT: Local Agent CLI -->
           <article class="proj-card">
@@ -843,6 +959,12 @@
        CONTACT SECTION
   ═══════════════════════════════════════ -->
   <section id="contact" class="section alt-bg">
+    <div class="bg-fx" aria-hidden="true">
+      <div class="mesh-blob b1" style="width:34vw;height:34vw;"></div>
+      <div class="mesh-blob b2" style="width:30vw;height:30vw;"></div>
+      <canvas class="grid-canvas" data-fx="grid"></canvas>
+    </div>
+
     <div class="section-inner">
 
       <div class="sec-head reveal">
@@ -852,9 +974,11 @@
       </div>
 
       <div class="contact-wrap reveal">
+        <h3 class="contact-cta">Have an interesting problem to solve?<br />Let's build it.</h3>
         <p class="contact-text">
-          Always open to new opportunities, collabs, and interesting conversations.
-          Drop me a message — I'll get back faster than a cold cache hit.
+          Always open to new opportunities, collabs, and interesting conversations
+          about agentic AI, LLM apps, and backend systems. Drop me a message —
+          I'll get back faster than a cold cache hit.
         </p>
         <div class="contact-grid">
           <a href="https://github.com/Adii0906" target="_blank" class="clink">
